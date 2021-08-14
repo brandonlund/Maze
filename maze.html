@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en-us">
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Emscripten-Generated Code</title>
+    <style>
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+        }
+
+        body {
+            font-family: arial;
+            margin: 0;
+            padding: 0;
+            background: beige;
+        }
+
+
+
+        .emscripten {
+            padding-right: 0;
+            margin-left: auto;
+            margin-right: auto;
+            /*display: block;*/
+        }
+
+        div.emscripten_border {
+            border: none;
+        }
+
+        /* the canvas *must not* have any border or padding, or mouse coords will be wrong */
+        canvas.emscripten {
+            border: 10px none;
+            background-color: beige;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()" tabindex=-1></canvas>
+    <script type='text/javascript'>
+        var Module = {
+            preRun: [],
+            postRun: [],
+            canvas: (function () {
+                var canvas = document.getElementById('canvas');
+
+                // As a default initial behavior, pop up an alert when webgl context is lost. To make your
+                // application robust, you may want to override this behavior before shipping!
+                // See http://www.khronos.org/registry/webgl/specs/latest/1.0/#5.15.2
+                canvas.addEventListener("webglcontextlost", function (e) { alert('WebGL context lost. You will need to reload the page.'); e.preventDefault(); }, false);
+
+                return canvas;
+            })(),
+        };
+    </script>
+    <script async type="text/javascript" src="./maze.js"></script>
+    <script type="text/javascript">
+        Module.canvas.addEventListener("resize", (e) => {
+
+            var viewWidth = e.detail.width * .75;
+            var viewHeight = e.detail.width / Module._olc_WindowAspectRatio * .75;
+            
+            if (viewHeight > e.detail.height) {
+                viewHeight = e.detail.height * .75;
+                viewWidth = e.detail.height * Module._olc_WindowAspectRatio * .75;
+            }
+
+            // update dom attributes
+            Module.canvas.setAttribute("width", viewWidth);
+            Module.canvas.setAttribute("height", viewHeight);
+
+            var top = (e.detail.height - viewHeight) / 2;
+            var left = (e.detail.width - viewWidth) / 2;
+
+            // update styles
+            Module.canvas.style.position = "fixed";
+            Module.canvas.style.top = top.toString() + "px";
+            Module.canvas.style.left = left.toString() + "px";
+            Module.canvas.style.width = "";
+            Module.canvas.style.height = "";
+
+            // trigger PGE update
+            Module._olc_PGE_UpdateWindowSize(viewHeight, viewWidth);
+
+            // ensure canvas has focus
+            Module.canvas.focus();
+            e.preventDefault();
+        });
+    </script>
+
+    <h2 style="color: black; font-family: 'Times New Roman', Times, serif;">This is my maze program. It was my 8th
+        assignment of the Spring 2021 semester for my data structures class. This project uses graph theory and BFS to
+        find the path from the start of the maze to the end of the maze.
+        The maze is generated as a disjoint set. Doing this, a perfect maze is generated every time.</h2>
+    <p style="color: black; font-family: 'Times New Roman', Times, serif;">Keyboard Controls:</p>
+    <p style="color: black; font-family: 'Times New Roman', Times, serif;">------------------</p>
+    <p style="color: black; font-family: 'Times New Roman', Times, serif;">SPACE BAR - Complete construction of the maze
+        immediately</p>
+    <p style="color: black; font-family: 'Times New Roman', Times, serif;">A - Animate construction of the maze</p>
+    <p style="color: black; font-family: 'Times New Roman', Times, serif;">R - Clear old maze and start new construction
+    </p>
+    <p style="color: black; font-family: 'Times New Roman', Times, serif;">S - Solve the maze using BFS on the graph</p>
+    <p style="color: black; font-family: 'Times New Roman', Times, serif;">Q or ESCAPE - Quit the program</p>
+    <p style="color: black; font-family: 'Times New Roman', Times, serif;"></p>
+    <p style="color: black; font-family: 'Times New Roman', Times, serif;">Mouse Controls:</p>
+    <p style="color: black; font-family: 'Times New Roman', Times, serif;">---------------</p>
+    <p style="color: black; font-family: 'Times New Roman', Times, serif;">Left mouse up - move start node (green)</p>
+    <p style="color: black; font-family: 'Times New Roman', Times, serif;">Right mouse up- move end node (red)</p>
+
+</body>
+
+</html>
